@@ -1,4 +1,4 @@
-package jpabook.jpashop;
+package jpabook.jpashop.domain;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -8,8 +8,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@Table(name = "orders")
 @Entity
+@Table(name = "orders")
 @Getter @Setter
 public class Order {
     @Id @GeneratedValue
@@ -20,7 +20,7 @@ public class Order {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @OneToMany(mappedBy = "order_id", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItem> orderItems = new ArrayList<>();
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)

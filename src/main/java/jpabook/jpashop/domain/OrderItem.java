@@ -1,4 +1,4 @@
-package jpabook.jpashop;
+package jpabook.jpashop.domain;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -20,4 +20,7 @@ public class OrderItem {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "item_id")
     private Item item;
+
+    private int orderPrice;
+    private int count;
 }
