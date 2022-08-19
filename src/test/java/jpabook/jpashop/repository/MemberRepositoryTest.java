@@ -25,8 +25,12 @@ public class MemberRepositoryTest {
         Member member = new Member();
         member.setName("jin");
 
+        System.out.println("======= memberRepository.save start =======");
         Long savedId = memberRepository.save(member);
+        System.out.println("======= memberRepository.save end ======= : " + String.valueOf(savedId));
+        System.out.println("======= memberRepository.findOne start =======");
         Member foundMember = memberRepository.findOne(savedId);
+        System.out.println("======= memberRepository.findOne end =======" + foundMember.toString());
         Assertions.assertThat(savedId).isEqualTo(foundMember.getId());
         Assertions.assertThat(member.getName()).isEqualTo(foundMember.getName());
         Assertions.assertThat(foundMember).isEqualTo(member); // jpa 동일성 보장
