@@ -30,6 +30,7 @@ public class OrderSimpleApiController {
         return orders.stream().map(o -> new SimpleOrderDto(o)).collect(Collectors.toList());
     }
 
+    // N+1 문제 해결을 위하여 jetch join 사용 case
     @GetMapping("/api/v3/simple-orders")
     public List<SimpleOrderDto> getOrdersv3() {
         List<Order> orders = orderRepository.findAllWithMemberDelivery();
