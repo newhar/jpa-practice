@@ -1,5 +1,6 @@
 package jpabook.jpashop.repository;
 
+import jpabook.jpashop.api.OrderApiController;
 import jpabook.jpashop.domain.Member;
 import jpabook.jpashop.domain.Order;
 import jpabook.jpashop.domain.OrderSearch;
@@ -27,8 +28,15 @@ public class OrderRepository {
         return em.find(Order.class, id);
     }
 
-    public List<Order> findAll(OrderSearch orderSearch) {
+    public List<Order> findAll() {
         return em.createQuery("select o from Order o")
+                .getResultList();
+    }
+
+    public List<Order> findAllWithMemberDelivery() {
+        return em.createQuery("select o from Order o" +
+                " join fetch o.member m" +
+                " join fetch o.delivery",Order.class)
                 .getResultList();
     }
 
@@ -81,7 +89,7 @@ public class OrderRepository {
             }
             jpql += " m.name like :name";
         }
-        TypedQuery<Order> query = em.createQuery(jpql, Order.class) .setMaxResults(1000); //최대 1000건
+        TypedQuery<Order> query = em.createQuery(jpql, Order.class).setMaxResults(1000); //최대 1000건
         if (orderSearch.getOrderStatus() != null) {
             query = query.setParameter("status", orderSearch.getOrderStatus());
         }
@@ -91,4 +99,26 @@ public class OrderRepository {
         return query.getResultList();
     }
 
+    // collection fetch join 할때는 distinct 키워드를 사용하여 필요한 만큼의 테이블을 조회할 수 있다.
+    // db 에서는 동일한 row 만 중복을 제거할 수 있으므로, 거기에다가 jpa 에서 중복된 컬렉션 id 값이 있으면 제거해주는 역할을 하는 것이다.
+    public List<Order> findAllwithItem() {
+        return em.createQuery(
+                "select distinct o from Order o" +
+                        " join fetch o.member m" +
+                        " join fetch o.delivery d" +
+                        " join fetch o.orderItems oi" +
+                        " join fetch oi.item i", Order.class)
+                .getResultList();
+    }
+
+    public List<Order> findAllWithMemberDelivery(int offset, int limit) {
+        return em.createQuery(
+                        "select distinct o from Order o" +
+                                " join fetch o.member m" +
+                                " join fetch o.delivery d"
+                                , Order.class)
+                .setFirstResult(offset)
+                .setMaxResults(limit)
+                .getResultList();
+    }
 }
